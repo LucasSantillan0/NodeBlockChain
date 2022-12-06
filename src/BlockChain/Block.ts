@@ -28,27 +28,6 @@ export class Block {
         blockChain.length++
     }
 
-    //TODO: Think if it's relevant to mine
-    static mine(previousBlock: Block, body: string) {
-        const { _hash: previousHash } = previousBlock;
-        let { _difficulty: difficulty } = previousBlock;
-        let hash: string;
-        let time: number;
-        let nonce = 0;
-
-        do {
-            time = Date.now();
-            nonce += 1;
-            difficulty =
-                previousBlock._time + MINE_RATE > time ? difficulty + 1 : difficulty - 1;
-            hash = SHA256(previousHash + time + body + nonce + difficulty).toString();
-        } while (hash.substring(0, difficulty) !== "0".repeat(difficulty));
-
-        const newBlock = new Block({ body, blockChain: previousBlock.blockChain, previousBlock });
-
-        return newBlock
-    }
-
     get body() {
         return this._body
     }
@@ -65,7 +44,10 @@ export class Block {
         nextBlock._previousBlock = this
         this._nextBlock = nextBlock
     }
-
+    public clean() {
+        this._nextBlock = null
+        this._previousBlock = null as unknown as Block
+    }
     toString() {
         const { _time: time, _previousBlock: previousBlock, _hash: hash, _body: body, _nonce: nonce, _difficulty: difficulty } = this;
         return `🧱 Block - 

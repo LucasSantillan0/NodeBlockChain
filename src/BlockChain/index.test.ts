@@ -6,6 +6,7 @@ describe('Blockchain', () => {
         expect(blockchain.id).toBe('1')
     })
     test('Should have a head', () => {
+        blockchain.addBlock("{\"first block\":true}")
         expect(blockchain.head.body).toBe("{\"first block\":true}")
     })
     test('Should add a block correctly', () => {
@@ -24,7 +25,7 @@ describe('Blockchain', () => {
         expect(iterableBlockChain.length)
         let i = 0
         for (const block of iterableBlockChain) {
-            expect(block.body).toBe(["{\"first block\":true}", ...bodies][i])
+            expect(block.body).toBe(bodies[i])
             i++
         }
     })

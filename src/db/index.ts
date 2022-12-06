@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId, Collection, Document, OptionalId } from 'mongodb'
-import { MONGODB_DBNAME, MONGODB_URL, MONGODB_USERS } from '../config';
+import { MONGODB_BLOCKS, MONGODB_DBNAME, MONGODB_URL, MONGODB_USERS } from '../config';
 import { collections } from './collections';
 
 export interface User {
@@ -9,14 +9,14 @@ export interface User {
     money: string
 }
 
-export interface Blocks {
-    list:Block[]
+export interface BlocksDB {
+    list: BlockDB[]
 }
 
-export interface Block {
+export interface BlockDB {
     _id?: ObjectId
-    hash:string
-    body:string
+    hash: string
+    body: string
 }
 
 export const connectToDatabase = async () => {
@@ -28,8 +28,10 @@ export const connectToDatabase = async () => {
     const db = client.db(MONGODB_DBNAME);
 
     const usersCollection: Collection<User> = db.collection(MONGODB_USERS);
+    const blockCollection: Collection<BlocksDB> = db.collection(MONGODB_BLOCKS);
 
     collections.users = usersCollection;
+    collections.blocks = blockCollection;
 
-    console.log(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}`);
+    console.log(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}, ${blockCollection.collectionName}`);
 }

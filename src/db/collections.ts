@@ -1,6 +1,6 @@
 import { Collection, OptionalId } from 'mongodb'
-import { User } from '.'
+import { BlocksDB, User } from '.'
 
-export const collections: { users?: Collection<User>, blocks?:Collection } = {
+export const collections: { users?: Collection<User>, blocks?:Collection<BlocksDB> } = {
 
 }
