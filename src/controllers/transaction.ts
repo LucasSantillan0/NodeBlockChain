@@ -9,11 +9,20 @@ export const makeTransaction: controller = async (req, res) => {
     const usersPromise = [collections.users?.findOne({ walletName: from }), collections.users?.findOne({ walletName: to })]
     Promise.all(usersPromise).then(
         ([fromUser, toUser]) => {
-            const fromUserUpdate = { ...fromUser, money: cryptoCurrency(fromUser?.money as string).subtract(cryptoCurrency(coins)) }
-            const toUserUpdate = { ...toUser, money: cryptoCurrency(toUser?.money as string).add(cryptoCurrency(coins)) }
-            return [collections.users?.updateOne({ _id: fromUser?._id }, fromUserUpdate), collections.users?.updateOne({ _id: toUser?._id }, toUserUpdate)]
+            return [collections.users?.updateOne({ _id: fromUser?._id }, { $set: { money: cryptoCurrency(fromUser?.money as string).subtract(cryptoCurrency(coins)).toString() } }),
+            collections.users?.updateOne({ _id: toUser?._id }, { $set: { money: cryptoCurrency(toUser?.money as string).add(cryptoCurrency(coins)).toString() } })]
         }
     ).then(([fromUpdate, toUpdate]) => {
-        blockChain.addBlock(makeOrder({ coins, from, to }))
+        return blockChain.addBlock(makeOrder({ coins, from, to }))
     })
+        .then(() => {
+            for (const block of blockChain) {
+                console.log(block.body)
+            }
+            res.json({ ok: 'ok' })
+        })
+}
+export const getTransations: controller = async (req, res) => {
+    const transactions = await collections.blocks?.find().toArray()
+    res.json(transactions)
 }

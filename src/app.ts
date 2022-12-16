@@ -18,4 +18,6 @@ connectToDatabase().then(() => {
         console.log(`Server listening at ${PORT}`)
     })
 }
-)
+).then(() => {
+    blockChain.restoreBlockChainFromDatabase();
+})

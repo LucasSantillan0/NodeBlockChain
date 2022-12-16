@@ -15,8 +15,14 @@ export class BlockChain implements Iterable<Block>{
         this._tail = null as unknown as Block
     }
 
-    public addBlock(...bodies: string[]) {
+    public async addBlock(...bodies: string[]) {
+        this.createBlock(...bodies)
+        await this.saveLastBlock()
+        return this
+    }
+    private createBlock(...bodies: string[]) {
         bodies.forEach(body => {
+            console.log('add')
             const newBlock = new Block({ body, previousBlock: this.head, blockChain: this });
             if (!this._head) {
                 this._head = newBlock
@@ -32,7 +38,7 @@ export class BlockChain implements Iterable<Block>{
     }
 
     *[Symbol.iterator](): IterableIterator<Block> {
-        if(!this.length)return
+        if (!this.length) return
         try {
             let current = this._tail;
             yield current
@@ -46,15 +52,20 @@ export class BlockChain implements Iterable<Block>{
     }
 
     public async restoreBlockChainFromDatabase() {
-        this.cleanBlockChain()
-        const blockCollection = await collections.blocks?.findOne()
-        const blocks = blockCollection?.list
-        this.addBlock(...blocks?.filter(block => block.body) as unknown as string[])
+        console.log('restoring')
+        const blockCollection = await collections.blocks?.find().toArray()
+        console.log(blockCollection)
+        const bodies = blockCollection?.filter(block => block.body).map(block => block.body)
+        bodies?.length && this.createBlock(...bodies)
+        console.log('length:', this.length)
+        for (const blocks of this) {
+            console.log(blocks.body)
+        }
     }
 
     private cleanBlockChain() {
         let current = this.tail
-        while (current.nextBlock) {
+        while (current?.nextBlock) {
             const aux = current
             current = current.nextBlock
             aux.clean()
@@ -64,6 +75,9 @@ export class BlockChain implements Iterable<Block>{
     }
 
     //TODO:save blocks in database
+    private async saveLastBlock() {
+        await collections.blocks?.insertOne({ body: this._head.body, hash: this._head.hash })
+    }
 
     get head() {
         return this._head

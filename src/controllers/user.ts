@@ -18,3 +18,7 @@ export const findUserByWallet: controller = async (req, res) => {
     }
     res.json(user)
 }
+export const findAllUsers:controller = async (req,res) => {
+    const users = await collections.users?.find().toArray()
+    res.json(users)
+}

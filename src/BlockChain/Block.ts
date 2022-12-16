@@ -25,7 +25,6 @@ export class Block {
         this._hash = SHA256(body + `${blockChain.length && previousBlock._hash}`).toString();
         this._body = body
         this.blockChain = blockChain
-        blockChain.length++
     }
 
     get body() {
@@ -39,6 +38,9 @@ export class Block {
             throw new Error("Head has no block forward")
         }
         return this._nextBlock
+    }
+    get hash() {
+        return this._hash
     }
     public fitNext(nextBlock: Block) {
         nextBlock._previousBlock = this

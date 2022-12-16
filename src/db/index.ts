@@ -9,15 +9,13 @@ export interface User {
     money: string
 }
 
-export interface BlocksDB {
-    list: BlockDB[]
-}
-
 export interface BlockDB {
     _id?: ObjectId
     hash: string
     body: string
 }
+
+
 
 export const connectToDatabase = async () => {
 
@@ -28,7 +26,7 @@ export const connectToDatabase = async () => {
     const db = client.db(MONGODB_DBNAME);
 
     const usersCollection: Collection<User> = db.collection(MONGODB_USERS);
-    const blockCollection: Collection<BlocksDB> = db.collection(MONGODB_BLOCKS);
+    const blockCollection: Collection<BlockDB> = db.collection(MONGODB_BLOCKS);
 
     collections.users = usersCollection;
     collections.blocks = blockCollection;

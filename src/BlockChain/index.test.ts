@@ -18,10 +18,10 @@ describe('Blockchain', () => {
         expect(first.body).toBe("{\"first block\":true}")
         expect(first.nextBlock.body).toBe('second block')
     })
-    test('Should iterate correctly', () => {
+    test('Should iterate correctly', async () => {
         const bodies = ['1', '2', '3']
         const iterableBlockChain = new BlockChain('2')
-            .addBlock(...bodies)
+        await iterableBlockChain.addBlock(...bodies)
         expect(iterableBlockChain.length)
         let i = 0
         for (const block of iterableBlockChain) {
