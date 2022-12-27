@@ -1,4 +1,5 @@
 import Express from 'express'
+import morgan from 'morgan'
 import { BlockChain } from './BlockChain'
 import { PORT } from './config'
 import { connectToDatabase } from './db'
@@ -8,9 +9,9 @@ const app = Express()
 
 app.set('PORT', PORT)
 
+app.use(morgan("tiny"))
 app.use(Express.json())
 app.use('/api', router)
-
 export const blockChain = new BlockChain('test')
 
 connectToDatabase().then(() => {

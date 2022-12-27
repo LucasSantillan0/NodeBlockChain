@@ -74,7 +74,6 @@ export class BlockChain implements Iterable<Block>{
         this._head = null as unknown as Block
     }
 
-    //TODO:save blocks in database
     private async saveLastBlock() {
         await collections.blocks?.insertOne({ body: this._head.body, hash: this._head.hash })
     }
